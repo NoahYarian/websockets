@@ -8,9 +8,45 @@
   </head>
   <body>
     <p>Hello world!</p>
+    <form>
+      <input>
+      <input type="submit">
+    </form>
+    <ul></ul>
     <script src='./lib/socket.io-client/socket.io.js'></script>
     <script>
+      var form = document.querySelector('form');
+      var input = document.querySelector('input');
+      var ul = document.querySelector('ul');
+
+      form.addEventListener('submit', function () {
+        var text = input.value;
+
+        socket.emit('chatMessage', {text: text});
+        input.value = '';
+        event.preventDefault();
+      });
+
       var socket = io();
+
+      socket.on('connect', function (obj) {
+        console.log(socket.id);
+      });
+
+      socket.on('chatMessage', function (msg) {
+        var li = genLIElement(msg);
+
+        ul.appendChild(li);
+      });
+
+      function genLIElement(message) {
+        var li = document.createElement('li');
+        var text = document.createTextNode(message.text);
+
+        li.appendChild(text);
+        return li;
+      }
+
     </script>
   </body>
 </html>
